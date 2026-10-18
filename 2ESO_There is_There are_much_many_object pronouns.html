@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Copy's English Adventure – 2ESO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#fff4d6;--card:#fff;--ink:#2c2a4a;--a:#ff8a3d;--b:#27b6a5;--c:#ff6f91;--d:#ffd23f;--e:#7c6cf0;--mut:#e9e4ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root:not([data-theme=light]){color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#2a2540;--card:#3a3460;--ink:#fff4d6;--mut:#4d4680;color-scheme:dark}}
+:root[data-theme=dark]{--bg:#2a2540;--card:#3a3460;--ink:#fff4d6;--mut:#4d4680;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 17px/1.4 'Baloo 2',system-ui,'Segoe UI',sans-serif;min-height:100vh;background-image:radial-gradient(var(--d) 2px,transparent 2px);background-size:34px 34px}
+header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 14px;background:linear-gradient(90deg,var(--a),var(--c),var(--e));color:#fff}
+header h1{margin:0;font-size:1.3rem}header div{display:flex;gap:6px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:9px 16px;background:var(--b);color:#fff;font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+button:active{transform:translateY(2px)}button[disabled]{opacity:.4;cursor:default}
+.sm{padding:5px 12px;font-size:.9rem;background:var(--e)}.pdf{background:var(--d);color:#3a2d00}.gh{background:rgba(255,255,255,.25)}
+.wrap{max-width:980px;margin:14px auto;padding:0 12px;display:grid;grid-template-columns:230px 1fr;gap:14px;align-items:start}
+@media(max-width:700px){.wrap{grid-template-columns:1fr}}
+#catbox{background:var(--card);border-radius:22px;padding:10px;text-align:center;border:3px solid var(--d)}
+#cat{width:170px;max-width:60%;animation:fl 3s ease-in-out infinite}
+.q #cat{width:100px}
+@keyframes fl{50%{transform:translateY(-6px)}}
+#mo{display:none;transform-box:fill-box;transform-origin:50% 0}.talk #sm{display:none}.talk #mo{display:block;animation:mv .22s infinite alternate ease-in-out}
+@keyframes mv{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
+#bub{background:var(--mut);border-radius:16px;padding:8px 12px;font-size:.95rem;margin-top:4px}
+.card{background:var(--card);border-radius:22px;padding:16px;border:3px solid var(--b);box-shadow:0 6px 0 rgba(0,0,0,.1)}
+h2{margin:.3em 0}h2 u{color:var(--c);text-decoration:none;letter-spacing:2px}
+input{font:inherit;padding:10px;border-radius:12px;border:2px solid var(--e);width:100%;margin:5px 0 10px;background:var(--bg);color:var(--ink)}
+.lv{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;border-radius:16px;padding:12px;margin:10px 0;color:#fff}
+.lv small{display:block;opacity:.95}.l0{background:var(--a)}.l1{background:var(--b)}.l2{background:var(--e)}.lock{filter:grayscale(.8);opacity:.6}
+.lv button{background:#fff;color:#333}
+.dots{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}.dots i{font-style:normal;width:28px;height:28px;border-radius:50%;background:var(--mut);display:grid;place-items:center;font-size:.8rem;cursor:pointer}
+.dots .on{background:var(--b);color:#fff}.dots .cur{outline:3px solid var(--c)}
+.pic{font-size:2.6rem;text-align:center;background:var(--mut);border-radius:16px;padding:8px;margin:8px 0;letter-spacing:4px}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;background:var(--mut);color:var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.12)}.opt b{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--a);color:#fff;margin-right:8px}
+.opt.sel{background:var(--d);color:#3a2d00}
+.nav{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px}
+.big{font-size:3rem;text-align:center;color:var(--c)}.err{background:var(--mut);border-radius:12px;padding:8px 12px;margin:6px 0}.ok{color:var(--b)}.ko{color:var(--c)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:14px;display:none;z-index:9}
+</style></head><body>
+<header><h1>🐾 Copy's English Adventure · 2ESO</h1><div><button class="gh sm" id="bh" onclick="home()" style="display:none">🏠 Inicio</button><button class="gh sm" id="bo" onclick="logout()" style="display:none">👤 Cambiar alumno</button><button class="pdf sm" onclick="dl()">📄 Informe PDF</button></div></header>
+<div class="wrap" id="w"><div id="catbox"><svg id="cat" viewBox="0 0 200 200" aria-label="Copy the cat">
+<path d="M150 185 Q196 170 180 120" stroke="#9aa3ad" stroke-width="14" fill="none" stroke-linecap="round"/>
+<path d="M58 192 Q58 148 100 148 Q142 148 142 192Z" fill="#9aa3ad"/><ellipse cx="100" cy="176" rx="22" ry="24" fill="#fff"/>
+<path d="M42 72 L48 20 L90 52Z" fill="#8f98a3"/><path d="M158 72 L152 20 L110 52Z" fill="#8f98a3"/><path d="M54 58 L57 36 L75 50Z" fill="#f7b6c2"/><path d="M146 58 L143 36 L125 50Z" fill="#f7b6c2"/>
+<ellipse cx="100" cy="100" rx="66" ry="58" fill="#9aa3ad"/><path d="M100 44 Q84 70 91 94 L109 94 Q116 70 100 44Z" fill="#fff"/><ellipse cx="100" cy="123" rx="32" ry="23" fill="#fff"/>
+<ellipse cx="75" cy="98" rx="9" ry="11" fill="#2b2b3a"/><ellipse cx="125" cy="98" rx="9" ry="11" fill="#2b2b3a"/><circle cx="78" cy="93" r="3.5" fill="#fff"/><circle cx="128" cy="93" r="3.5" fill="#fff"/>
+<path d="M63 82 Q75 73 87 81M113 81Q125 73 137 82" stroke="#6b737d" stroke-width="3" fill="none" stroke-linecap="round"/>
+<circle cx="58" cy="118" r="8" fill="#ffb3c1" opacity=".7"/><circle cx="142" cy="118" r="8" fill="#ffb3c1" opacity=".7"/>
+<path d="M93 112 Q100 108 107 112 Q100 121 93 112Z" fill="#f48fa0"/>
+<path id="sm" d="M86 126 Q93 137 100 125 Q107 137 114 126" fill="none" stroke="#4a3b3b" stroke-width="2.5" stroke-linecap="round"/>
+<path id="mo" d="M87 125 Q100 150 113 125Z" fill="#8b2e47"/>
+<path d="M60 112 L28 106M60 120 L28 124M140 112 L172 106M140 120 L172 124" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+<div id="bub"></div></div><div id="main"></div></div><div id="toast"></div>
+<script>
+const D=[`🛏️🛏️|Look! ___ two beds in Alba's bedroom.|There is;There are;Is there|1
+🪞🚿|___ a mirror in the bathroom.|There is;There are;There aren't|0
+🛋️📺|Look at Daría's living room. There ___ a washing machine.|isn't;aren't;are|0
+🛏️|Look at Jesús's bed. There ___ any pillows.|aren't;isn't;are|0
+✂️✂️✂️|___ any scissors on Manuela's desk? Yes, there are.|Is there;Are there;There are|1
+📏✏️|___ a ruler in Marina's pencil case? Yes, there is.|Is there;Are there;There is|0
+|There ___ a rug in Adrián's room.|is;are;aren't|0
+🪟🪟|There ___ two windows in the kitchen.|is;are;isn't|1
+🍳🚰|___ a sink in the kitchen? Yes, there is.|Is there;Are there;There are|0
+🖍️🖍️🖍️🖍️|There ___ four highlighters in Natalia's pencil case.|is;are;isn't|1
+|Izan: "Is there a hairdryer in the bathroom?" Belén: "Yes, ___."|there is;there are;it is|0
+|Claudia: "Are there any lamps in your bedroom?" Sara: "No, ___."|there isn't;there aren't;there not|1
+🧹|There ___ a vacuum cleaner in the hall.|is;are;aren't|0
+|Which sentence is correct?|There are a stapler on Sara's desk.;There is a stapler on Sara's desk.;There is two staplers on Sara's desk.|1
+|Which sentence is correct?|There isn't any glue in José's bag.;There aren't any glue in José's bag.;Are there glue in José's bag?|0
+🚪🚪🚪|There ___ three doors in Hugo's flat.|is;are;isn't|1
+💾🎒|___ a flash drive in Raquel's bag? Yes, there is.|Is there;Are there;There are|0
+📦|Look at the empty box. Are there any compasses? ___|No, there aren't.;No, there isn't.;Yes, there are.|0
+🛌🧣🧣🧣|There ___ a lot of blankets in the cupboard.|is;are;isn't|1
+|Which is a question about Álvaro's room?|There is a lamp.;Is there a lamp?;There isn't a lamp.|1`,
+`☂️|There is ___ umbrella in the hall.|a;an;some|1
+|Daría has got ___ eraser in her pencil case.|a;an;any|1
+|Sara needs ___ glue for the project.|a;some;many|1
+|Is there ___ milk in the fridge, Manuela?|some;any;many|1
+|There aren't ___ pencils in Izan's case.|any;some;much|0
+🧺🧺🧺|How ___ towels are there? There are three.|much;many;any|1
+🍼💧|How ___ water is there in the bottle? A lot.|much;many;a|0
+|We haven't got ___ time, Adrián. Hurry up!|many;much;a|1
+|There are ___ books in the library.|a lot of;much;an|0
+|Marina has ___ homework today.|many;a lot of;an|1
+🖍️🖍️🖍️🖍️🖍️|How many highlighters are there?|There are five.;There is five.;There are much.|0
+🧴|There is ___ shampoo in the bathroom, Belén.|a;some;many|1
+|Would you like ___ juice, José?|some;any;a|0
+|Hugo hasn't got ___ scissors.|some;any;a|1
+|There isn't ___ space in Natalia's bag.|many;much;an|1
+|Álvaro has got ___ idea.|a;an;some|1
+|Claudia has got ___ pillows on her bed.|much;a lot of;an|1
+|How ___ money has Celia got?|many;much;some|1
+|Which sentence is correct?|There isn't some milk.;There isn't any milk.;There isn't a milk.|1
+|Alejandra needs ___ stapler.|a;an;some|0`,
+`|I like Alba. I like ___.|her;she;hers|0
+|Jesús is funny. Everybody likes ___.|he;him;his|1
+|Manuela and I are friends. Our teacher helps ___.|we;us;our|1
+🔍✂️✂️|Where are my scissors? I can't find ___.|them;they;it|0
+🧹|Where is the vacuum cleaner? Adrián is using ___.|it;them;its|0
+|Please help ___, Natalia. I don't understand.|me;I;my|0
+👦👧|Izan and Belén are in the kitchen. Look at ___!|they;them;their|1
+📖|This dictionary is great. I use ___ every day.|it;them;its|0
+|Sara is my sister. I live with ___.|she;her;hers|1
+|José, thanks for the stapler. I'll give ___ back tomorrow.|it;them;him|0
+|Raquel and Claudia are ill. We visit ___.|they;their;them|2
+|Hugo is in the garden. Can you call ___?|him;he;his|0
+|Álvaro, we need you. We are waiting for ___.|you;your;we|0
+🧣🧣|These blankets are warm. I love ___.|it;them;they|1
+|Alejandra and Celia are my friends. I play with ___.|them;they;their|0
+💡|Marina has a lamp. She likes ___.|it;its;they|0
+🖍️❓|Where is my highlighter? Can you see ___?|it;them;her|0
+|Mum is calling you and me. She is calling ___.|we;us;our|1
+|Daría, the teacher is looking at ___!|you;your;she|0
+|Which sentence is correct?|I love he.;I love him.;I love his.|1`
+].map(l=>l.split('\n').map(r=>{const[p,t,o,a]=r.split('|');return{p,t,o:o.split(';'),a:+a}}));
+const INTRO=["Hello! I'm Copy. In this level we use There is for one thing, and There are for many things. In negative sentences we say there isn't and there aren't. For questions, we say Is there? and Are there? Look carefully at the pictures and count. Good luck!",
+"Welcome to level two! Use much and how much with things you can't count, like water. Use many and how many with things you can count, like pillows. A lot of works with both. Use a before a consonant sound, and an before a vowel sound. Some is for positive sentences, and any is for negatives and questions.",
+"Level three! Object pronouns come after a verb. They are me, you, him, her, it, us and them. For example: I like Alba, so I like her. Think about who or what the sentence is about. Is it one person, or more? Is it a thing? You can do it!"];
+const CR={1:'CE1 · Criterio 1.1: Comprende el sentido global y la información específica de textos escritos y multimodales (imágenes) sencillos sobre temas cotidianos.',2:'CE2 · Criterio 2.2: Usa con corrección las estructuras gramaticales y el léxico trabajados (there is/are, cuantificadores, pronombres) en frases breves.',5:'CE5 · Criterio 5.1: Reflexiona sobre el funcionamiento de la lengua inglesa y amplía su repertorio léxico (hogar y material escolar).'};
+const cr=q=>q.p?1:/^Which/.test(q.t)?5:2;
+const NM=['There is / There are','Quantifiers','Object pronouns'];
+const $=s=>document.querySelector(s);let S=null;
+const key=()=>'copy2eso:'+(S.name+'|'+S.grp).toLowerCase();
+const sv=()=>{try{localStorage.setItem(key(),JSON.stringify(S));localStorage.setItem('copy2eso:last',JSON.stringify([S.name,S.grp]))}catch(e){}};
+const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';setTimeout(()=>e.style.display='none',3500)};
+function say(t,v=1){$('#bub').textContent=t;const ss=window.speechSynthesis,m=f=>{const c=$('#cat');c&&c.classList[f]('talk')};
+ try{ss&&ss.cancel()}catch(e){}
+ if(!v)return;
+ if(!ss||!window.SpeechSynthesisUtterance){m('add');setTimeout(()=>m('remove'),5000);return}
+ const u=new SpeechSynthesisUtterance(t),vs=ss.getVoices().filter(x=>/en[-_]GB/i.test(x.lang));
+ u.voice=vs.find(x=>/daniel|george|arthur|oliver|ryan|male/i.test(x.name)&&!/female/i.test(x.name))||vs[0]||null;
+ u.lang='en-GB';u.pitch=.85;u.rate=.88;u.onstart=()=>m('add');u.onend=u.onerror=()=>m('remove');ss.speak(u)}
+function shell(q){$('#w').className='wrap'+(q?' q':'');$('#bh').style.display=$('#bo').style.display=S?'':'none'}
+function login(){S=null;shell();let l=['',''];try{l=JSON.parse(localStorage.getItem('copy2eso:last'))||l}catch(e){}
+ $('#main').innerHTML=`<div class=card><h2>👋 ¡Hola! Identifícate para empezar</h2><label>Nombre y apellidos<input id=n value="${l[0]}" maxlength=60></label><label>Curso / grupo (ej. 2ºB)<input id=g value="${l[1]}" maxlength=12></label><button onclick="enter()">🚀 Entrar / Continuar</button><p style="font-size:.9rem">Si ya empezaste, escribe el mismo nombre y grupo y seguirás donde lo dejaste.</p></div>`;
+ say("Hi! I'm Copy. Write your name to start.",0)}
+function enter(){const n=$('#n').value.trim(),g=$('#g').value.trim();if(!n)return toast('Escribe tu nombre');
+ const k='copy2eso:'+(n+'|'+g).toLowerCase();let o=null;try{o=JSON.parse(localStorage.getItem(k))}catch(e){}
+ S=o||{name:n,grp:g,done:[0,0,0],ans:[0,1,2].map(()=>Array(20).fill(null)),l:0,i:0};sv();home(o?'Welcome back, '+n+'! Let\'s continue.':'Hello, '+n+'! Choose your level.')}
+function logout(){try{speechSynthesis.cancel()}catch(e){}login()}
+const sc=l=>D[l].filter((q,i)=>S.ans[l][i]===q.a).length;
+const an=l=>S.ans[l].filter(x=>x!=null).length;
+function home(m){shell();say(m||'Choose your level!',m?1:0);
+ $('#main').innerHTML=`<div class=card><h2>¡Hola, ${S.name}! 🎒</h2>`+[0,1,2].map(l=>{const d=S.done[l],ok=l==0||S.done[l-1];
+ return`<div class="lv l${l} ${ok?'':'lock'}"><div><b>Level ${l+1} · ${NM[l]}</b><small>${d?'✅ Nota: '+(sc(l)/2).toFixed(1)+' / 10':ok?an(l)+'/20 respondidas':'🔒 Termina el nivel anterior'}</small></div>${ok?`<button onclick="${d?`res(${l})`:`intro(${l})`}">${d?'Ver resultados':an(l)?'Continuar':'Empezar'}</button>`:''}</div>`}).join('')+'</div>'}
+function intro(l){S.l=l;S.fc=0;shell();$('#main').innerHTML=`<div class=card><h2>Level ${l+1}: ${NM[l]}</h2><p>Copy te explica el nivel en inglés. ¡Escucha con atención!</p><button class=sm onclick="say(INTRO[${l}])">🔊 Escuchar otra vez</button> <button onclick="Q(${S.ans[l].findIndex(x=>x==null)<0?0:S.ans[l].findIndex(x=>x==null)})">▶ Empezar el test</button></div>`;say(INTRO[l])}
+function Q(i){if(i!=null)S.i=i;const l=S.l,q=D[l][S.i],a=S.ans[l];shell(1);try{speechSynthesis.cancel()}catch(e){}$('#cat').classList.remove('talk');
+ $('#bub').textContent='Take your time! You can change your answers.';
+ $('#main').innerHTML=`<div class=card><b>Level ${l+1}</b> · Question ${S.i+1}/20 <button class=sm onclick="say(INTRO[${l}])">🔊 Copy</button>
+ <div class=dots>${D[l].map((_,k)=>`<i class="${a[k]!=null?'on':''} ${k==S.i?'cur':''}" onclick="Q(${k})">${k+1}</i>`).join('')}</div>
+ ${q.p?`<div class=pic>${q.p}</div>`:''}<h2>${q.t.replace('___','<u>_____</u>')}</h2>
+ ${q.o.map((o,k)=>`<button class="opt ${a[S.i]===k?'sel':''}" onclick="pick(${k})"><b>${'ABC'[k]}</b>${o}</button>`).join('')}
+ <div class=nav><button ${S.i?'':'disabled'} onclick="Q(${S.i-1})">◀ Anterior</button><button ${S.i<19?'':'disabled'} onclick="Q(${S.i+1})">${a[S.i]==null?'Saltar ⏭':'Siguiente ▶'}</button></div>
+ <div class=nav><button class=sm onclick="home()">💾 Guardar y salir</button>${S.fc?`<span>Sin responder: ${20-an(l)}. ¿Terminar?</span><button style="background:var(--c)" onclick="fin()">Sí, terminar</button><button class=sm onclick="S.fc=0;Q()">Seguir</button>`:`<button style="background:var(--c)" onclick="S.fc=1;Q()">🏁 Terminar nivel</button>`}</div></div>`}
+function pick(k){S.ans[S.l][S.i]=k;sv();Q()}
+function fin(){S.done[S.l]=1;S.fc=0;sv();res(S.l)}
+function res(l){shell();const c=sc(l),g=c/2,er=D[l].map((q,i)=>({q,i})).filter(x=>S.ans[l][x.i]!==x.q.a);
+ say(g>=5?'Well done, '+S.name+'! Great work!':'Good try, '+S.name+'! Look at your mistakes and keep learning.');
+ $('#main').innerHTML=`<div class=card><h2>Level ${l+1} completado 🎉</h2><div class=big>${g.toFixed(1)} / 10</div><p style="text-align:center">${c} aciertos · ${20-c} fallos</p>
+ ${er.length?'<h3>Tus fallos</h3>':'<h3>¡Sin fallos! ⭐</h3>'}${er.map(({q,i})=>{const x=S.ans[l][i];return`<div class=err><b>${i+1}.</b> ${q.p||''} ${q.t.replace('___','<u>_____</u>')}<br><span class=ko>Tu respuesta: ${x==null?'(sin responder)':q.o[x]}</span> · <span class=ok>Correcta: ${q.o[q.a]}</span></div>`}).join('')}
+ <div class=nav><button onclick="home()">🏠 Niveles</button><button class=pdf style="color:#3a2d00" onclick="dl()">📄 Informe PDF</button></div></div>`}
+function pdf(){const {jsPDF}=window.jspdf,d=new jsPDF(),cl=s=>String(s).replace(/[^\x20-\x7E\u00A0-\u00FF]/g,'');let y=0;
+ const T=(s,sz=10,b=0,x=15,col=[40,40,60])=>{d.setFontSize(sz);d.setFont('helvetica',b?'bold':'normal');d.setTextColor(...col);d.splitTextToSize(cl(s),180-(x-15)).forEach(t=>{if(y>282){d.addPage();y=18}d.text(t,x,y);y+=sz*.42+1.6})};
+ const bar=(p,lbl)=>{if(y>270){d.addPage();y=18}d.setFillColor(233,228,255);d.rect(15,y,110,5,'F');d.setFillColor(39,182,165);d.rect(15,y,1.1*p,5,'F');d.setTextColor(40,40,60);d.setFontSize(10);d.text(lbl,130,y+4);y+=9};
+ d.setFillColor(255,138,61);d.rect(0,0,210,28,'F');d.setTextColor(255,255,255);d.setFont('helvetica','bold');d.setFontSize(17);d.text("Copy's English Adventure - Informe final",15,13);d.setFontSize(10);d.text('Ingles 2 ESO (A2) - LOMLOE / Andalucia (Decreto 102/2023)',15,21);y=38;
+ T('Alumno/a: '+S.name+'   Grupo: '+(S.grp||'-')+'   Fecha: '+new Date().toLocaleDateString('es-ES'),11,1);y+=2;
+ const L=[0,1,2].map(l=>({l,d:S.done[l],g:sc(l)/2})),fd=L.filter(x=>x.d),m=fd.length?(fd.reduce((s,x)=>s+x.g,0)/fd.length).toFixed(1):'-';
+ T('Nota media (sobre 10): '+m+'   ·   Niveles completados: '+fd.length+'/3',13,1,15,[255,111,145]);y+=2;
+ T('Calificacion por nivel',12,1);L.forEach(x=>bar(x.d?x.g*10:0,'Level '+(x.l+1)+' '+NM[x.l]+': '+(x.d?x.g.toFixed(1)+'/10':'pendiente')));y+=3;
+ T('Criterios de evaluacion - porcentaje de consecucion',12,1);const t={1:[0,0],2:[0,0],5:[0,0]};
+ fd.forEach(x=>D[x.l].forEach((q,i)=>{const k=cr(q);t[k][1]++;if(S.ans[x.l][i]===q.a)t[k][0]++}));
+ [1,2,5].forEach(k=>{T(CR[k],9);const p=t[k][1]?Math.round(100*t[k][0]/t[k][1]):0;bar(p,t[k][1]?p+'% ('+t[k][0]+'/'+t[k][1]+')':'sin datos')});y+=3;
+ fd.forEach(x=>{T('Fallos - Level '+(x.l+1)+' ('+NM[x.l]+')',12,1);let n=0;D[x.l].forEach((q,i)=>{const a=S.ans[x.l][i];if(a!==q.a){n++;T((i+1)+'. '+q.t.replace('___','_____')+'  ->  Respuesta: '+(a==null?'(en blanco)':q.o[a])+'  |  Correcta: '+q.o[q.a],9,0,18)}});if(!n)T('Sin fallos. Excelente.',9,0,18);y+=3});
+ if(!fd.length)T('Aun no hay niveles completados: los fallos y el porcentaje por criterios aparecen al terminar cada nivel.',10);
+ return d.output('blob')}
+async function dl(){if(!S)return toast('Primero identifícate para generar tu informe');if(!window.jspdf)return toast('No se pudo cargar el generador de PDF. Comprueba tu conexión.');
+ const b=pdf(),fn='Informe_Copy_'+S.name.replace(/[^\wÁ-ÿ]+/g,'_')+'.pdf';
+ try{const c=window.claude&&await window.claude.use('downloads');if(c){await c.save({filename:fn,data:b});return}}catch(e){if(e&&e.code==='declined')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fn;document.body.appendChild(a);a.click();a.remove()}
+login();
+</script></body></html>
